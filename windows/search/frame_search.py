@@ -33,7 +33,6 @@ class FrameSearch(tk.Frame):
         """         
          name=self.search_mi_name.get()
          if name !="":
-                try:
                         list_name=search_name_account ("nombre",name)
                         if list_name:
                                 list_account=[list(x) for x in list_name]
@@ -44,18 +43,9 @@ class FrameSearch(tk.Frame):
                                 messagebox.showinfo(title,message)  
                                 self.clean(self.entry_search_name,self.search_mi_name) 
                         else: 
-                                title="No se encontro nombre"
-                                message= f"el nombre {name} no tiene asociada ninguna cuenta" 
-                                messagebox.showerror(title,message)
-                                                           
-                except sqlite3.OperationalError:
-                       title="No se ingresar a la base de datos"
-                       message= "La base de datos esta siendo ocupada o esta dañada, intente más tarde" 
-                       messagebox.showerror(title,message)                        
+                                messagebox.showerror("No se encontro nombre",f"el nombre {name} no tiene asociada ninguna cuenta" )                     
          else:
-              title="No ingreso nombre"
-              message= "Se envio el campo vacío" 
-              messagebox.showerror(title,message)
+              messagebox.showerror("No ingreso nombre","Se envio el campo vacío" )
 
     def clean(self,field,values):
           """_summary_:clears the specified field
@@ -78,10 +68,30 @@ class FrameSearch(tk.Frame):
            field.config(state='disabled')
 
     def empty_field(self,field):
+          """_summary_: check empty field
+
+        Args:
+            field (Entry): _description_
+
+        Returns:
+            False: In case of empty field
+            Field: In case of non-empty field
+        """          
           if field=="":
                 return False
           else:
                 return field
+
+    def field_function(self,field,key,funcion):
+          """_summary_:assign function to entry field
+
+        Args:
+            field (Entry): _description_
+            key (keyboard key): _description_
+            funcion (function to execute): _description_
+        """         
+          field.bind(key,funcion)
+    
 
     def delete(self):
         self.pack_forget()

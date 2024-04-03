@@ -10,7 +10,7 @@ class ConexionDB:
         self.cursor =self.conexion.cursor()
         
 
-    def cerrar(self):
+    def close(self):
         """_summary_: commit and close database 
         """        
         self.conexion.commit()

@@ -12,8 +12,6 @@ class App(tk.Frame):
         self.menu_account.add_command(label="Crear Nueva Cuenta",command=self.create_new_account)
 
         parent.config(menu=self.menu)
-
-
         self._frame = None
 
     def create_new_account(self):
