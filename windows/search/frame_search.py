@@ -3,7 +3,7 @@ from tkinter import messagebox
 import sqlite3
 
 import models
-from models.account_dao import search_name_account
+from models.account_dao import search_name_account,check_account
 
 
 class FrameSearch(tk.Frame):
@@ -19,9 +19,10 @@ class FrameSearch(tk.Frame):
 
         self.search_mi_name=tk.StringVar()
         self.entry_search_name=tk.Entry(self,textvariable=self.search_mi_name)
-        self.entry_search_name.config(width=20,font=('Arial',12))
+        self.entry_search_name.config(width=15,font=('Arial',12))
         self.entry_search_name.grid(row=0,column=1,sticky="w")
         self.entry_search_name.bind ("<Return>",self.search_name)
+        self.entry_search_name.focus()
 
         self._frame = None
 
@@ -92,6 +93,15 @@ class FrameSearch(tk.Frame):
         """         
           field.bind(key,funcion)
     
+    def check_account(self,account,function):
+          if account:
+            self.account=check_account(account)
+            if self.account:
+                function() 
+            else:
+                messagebox.showerror("Error",f"El numero {self.account} no esta asociado a ningun cliente" )
+          else:
+            messagebox.showerror("Error",f"El dato ingresado {account} no es valido como número de cuenta" )
 
     def delete(self):
         self.pack_forget()

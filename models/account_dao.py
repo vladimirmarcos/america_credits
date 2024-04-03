@@ -79,3 +79,66 @@ def save_new_account(New_Account):
         conexion.close()
     except sqlite3.OperationalError:
            messagebox.showerror("No se pudo acceder a la base de datos","No se ingresar a la base de datos","La base de datos esta siendo ocupada o esta dañada, intente más tarde")
+
+def check_account(cuenta):
+    """_summary_: Check if the account exists
+
+    Args:
+        cuenta (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """    
+    try:
+        conexion=ConexionDB()
+        sql=f""" SELECT cuenta from cuentas WHERE cuenta={cuenta}"""   
+        conexion.cursor.execute(sql)
+        data=conexion.cursor.fetchone()
+        conexion.close()
+        data=list(data)
+        data=data[0]
+        return data
+    except sqlite3.OperationalError:
+        messagebox.showerror("No se pudo acceder a la base de datos","No se ingresar a la base de datos","La base de datos esta siendo ocupada o esta dañada, intente más tarde")
+        return None
+    except TypeError:
+        return None
+    
+def search_data_account(cuenta):
+        """_summary_: Search for account details
+
+    Args:
+        cuenta (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """ 
+        try:       
+            conexion=ConexionDB()
+            sql=f""" SELECT nombre,dni,contacto_telefono,contacto_direccion from cuentas WHERE cuenta={cuenta}"""   
+            conexion.cursor.execute(sql)
+            data=conexion.cursor.fetchone()
+            conexion.close()
+            data=list(data)
+            return data
+        except sqlite3.OperationalError:
+            messagebox.showerror("No se pudo acceder a la base de datos","No se ingresar a la base de datos","La base de datos esta siendo ocupada o esta dañada, intente más tarde")
+            return None
+        
+def update_data(account,field,new_value):
+    """_summary_: update account data
+
+    Args:
+        account (_type_): _description_
+        field (_type_): _description_
+        new_value (_type_): _description_
+    """    
+    try:
+        conexion=ConexionDB()
+        sql=f""" update cuentas set {field}='{new_value}' where cuenta={account}
+    """
+        conexion.cursor.execute(sql)
+        conexion.close()
+    except sqlite3.OperationalError:
+        messagebox.showerror("No se pudo acceder a la base de datos","No se ingresar a la base de datos","La base de datos esta siendo ocupada o esta dañada, intente más tarde")
+        
