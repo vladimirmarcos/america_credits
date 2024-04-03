@@ -2,6 +2,7 @@ import tkinter as tk
 
 from windows.account.frame_new_account import FrameNewAccount
 from windows.account.frame_change_account_data import FrameChangeData
+from windows.credits.frame_new_credit import FrameNewCredit
 
 class App(tk.Frame):
     
@@ -14,6 +15,11 @@ class App(tk.Frame):
         self.menu.add_cascade(label="Cuentas", menu=self.menu_account)
         self.menu_account.add_command(label="Crear Nueva Cuenta",command=self.create_new_account)
         self.menu_account.add_command(label="Modificar Datos Cuenta",command=self.change_data_account)
+        
+        self.menu_credit= tk.Menu(self.menu, tearoff=0)
+        self.menu.add_cascade(label="Creditos", menu=self.menu_credit)
+        self.menu_credit.add_command(label="Crear Nuevo Credito",command=self.create_new_credit)
+        
 
         parent.config(menu=self.menu)
         self._frame = None
@@ -31,3 +37,10 @@ class App(tk.Frame):
                self._frame = None
             if self._frame is None:
                self._frame = FrameChangeData(self)
+
+    def create_new_credit(self):
+            if self._frame is not None:
+               self._frame.delete()
+               self._frame = None
+            if self._frame is None:
+               self._frame = FrameNewCredit(self)

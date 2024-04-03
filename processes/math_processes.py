@@ -14,3 +14,12 @@ def check_integer(number):
     except ValueError:
           
           return False
+
+def check_float(number):
+     try:
+        number=float(number)
+        return number
+     except ValueError:
+          return None
+     except TypeError:
+          return None
