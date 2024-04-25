@@ -136,9 +136,6 @@ class FrameNewAccount(FrameSearch):
                             
             else:
                 messagebox.showerror("Error al ingresar dato",f"el dato {self.my_dni.get()} no es valido como D.N.I.")
-                
-                
-                
         else:
               messagebox.showerror("Error por campos vacios","El campo nombre o D.N.I. o ambos se encuentran vacíos, se necesita de ambos campos para crear la cuenta")
              

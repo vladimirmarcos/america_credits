@@ -102,7 +102,6 @@ class FrameChangeData(FrameSearch):
     def enable_change_fields(self):
         """_summary_: Enable change fields
         """        
-
         self.my_account_name.set(self.name)
         self.my_account_dni.set(self.dni)
 
@@ -130,8 +129,6 @@ class FrameChangeData(FrameSearch):
         message=f"¿Esta seguro de cambiar de la cuenta {self.account} los siguientes datos\n "
         error_message=""
         change_list=[]
-        
-
         if new_name==new_dni==new_phone==new_address==False:
             messagebox.showerror("Error","Se enviaron todos los campos vacíos" )
         else:
@@ -165,8 +162,7 @@ class FrameChangeData(FrameSearch):
                     self.disable_change_field()
              else:
                  messagebox.showerror("Error",error_message)
-             
-                 
+                       
     def disable_change_field(self):
         """_summary_: Disable change fields
         """        
