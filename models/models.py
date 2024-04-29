@@ -49,3 +49,27 @@ class Guardator:
 
     def __str__(self):
         return f'Guardator[{self.name},{self.address},{self.phone},{self.credit}]'
+    
+class Judicial:
+    def __init__(self,account,amount,date):
+        self.id_ju=None
+        self.account=account
+        self.amount=amount
+        self.date=date
+        self.state=1
+        
+    def __str__(self):
+        return f'Judicial[{self.account},{self.amount},{self.date},{self.state}]'
+    
+class Judicial_info:
+    def __init__(self,name,address,phone,product,judicial_credit):
+        self.id_ju=None
+        self.name=name
+        self.address=address
+        self.phone=phone
+        self.product=product
+        self.judicial_credit=judicial_credit
+        
+    def __str__(self):
+        return f'Judicial_info[{self.name},{self.address},{self.phone},{self.product},{self.judicial_credit}]'
+

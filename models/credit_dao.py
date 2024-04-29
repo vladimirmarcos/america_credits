@@ -15,7 +15,7 @@ def search_judicial_credits(account):
     """  
     try:  
         conexion=ConexionDB()
-        sql=f""" SELECT id_ju,credito from judiciales WHERE cuenta={account} and estado=1"""
+        sql=f""" SELECT id_ju from judiciales WHERE cuenta={account} and estado=1"""
         conexion.cursor.execute(sql)
         data=conexion.cursor.fetchall()
         conexion.close()
@@ -202,7 +202,6 @@ def calculate_rest_of_the_credits(list_credit,today):
           rest_credit.append(total_credit)  
      return rest_credit
                
-
 def interest_calculation(today,expiration_date,amount):
      delta_days=today-expiration_date
      delta_days=delta_days.days
@@ -235,4 +234,34 @@ def delete_credit(credit):
     sql_1=f""" DELETE FROM fechas_pagos WHERE credito={credit}"""
     conexion.cursor.execute(sql_1)
     conexion.close()
-    
+
+def delete_guardator(credit):
+    conexion=ConexionDB()
+    sql=f""" DELETE FROM garantes WHERE credito={credit}"""
+    conexion.cursor.execute(sql)
+    conexion.close()
+
+
+def write_new_judicial_credit(Judicial):
+        conexion=ConexionDB()
+        sql=f"""INSERT INTO judiciales (cuenta,monto,fecha,estado)
+        VALUES ('{Judicial.account}','{Judicial.amount}','{Judicial.date}','{Judicial.state}')
+    """   
+        conexion.cursor.execute(sql)
+        sql_1=f"""SELECT MAX(id_ju) FROM judiciales;"""
+        conexion.cursor.execute(sql_1)
+        max_id=conexion.cursor.fetchall()
+        conexion.close()
+        max_id=list(max_id)
+        max_id=list(max_id[0])
+        max_id=max_id[0]
+        return max_id
+
+def write_new_judicial_info(new_info):
+        conexion=ConexionDB()
+        sql=f"""INSERT INTO judicial_info (nombre,direccion,telefono,producto,credito_judicial)
+        VALUES ('{new_info.name}','{new_info.address}','{new_info.phone}','{new_info.product}','{new_info.judicial_credit}')
+    """   
+       
+        conexion.cursor.execute(sql)
+        conexion.close()

@@ -4,6 +4,7 @@ from windows.account.frame_new_account import FrameNewAccount
 from windows.account.frame_change_account_data import FrameChangeData
 from windows.credits.frame_new_credit import FrameNewCredit
 from windows.credits.frame_delete_credit import FrameDeleteCredit
+from windows.credits.frame_judical_credit import FrameJudicialCredit
 
 class App(tk.Frame):
     
@@ -21,6 +22,7 @@ class App(tk.Frame):
         self.menu.add_cascade(label="Creditos", menu=self.menu_credit)
         self.menu_credit.add_command(label="Crear Nuevo Credito",command=self.create_new_credit)
         self.menu_credit.add_command(label="Eliminar Credito",command=self.delete_credit)
+        self.menu_credit.add_command(label="Enviar Credito a Judiciales",command=self.judicial_credit)
         
 
         parent.config(menu=self.menu)
@@ -53,3 +55,10 @@ class App(tk.Frame):
                self._frame = None
             if self._frame is None:
                self._frame = FrameDeleteCredit(self)
+    
+    def judicial_credit(self):
+            if self._frame is not None:
+               self._frame.delete()
+               self._frame = None
+            if self._frame is None:
+               self._frame = FrameJudicialCredit(self)

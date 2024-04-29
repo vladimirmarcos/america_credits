@@ -5,7 +5,7 @@ import datetime
 
 import models
 from models.account_dao import search_data_account
-from models.credit_dao import search_all_credit_account,search_info_guardator,delete_credit,calculate_rest_of_the_credits
+from models.credit_dao import search_all_credit_account,search_info_guardator,delete_credit,calculate_rest_of_the_credits, delete_guardator
 
 import processes
 from processes.math_processes import check_integer
@@ -63,7 +63,7 @@ class FrameRemoveCredit(FrameSearch):
         self.guardator_phone=[0] * 12
         self.guardator_address=[0] * 12
 
-        t=5
+        t=6
         credit_id=tk.StringVar()
         credit_id.set("Id Credito")
         label_credit_id=tk.Entry(self,text=credit_id,justify="left")
@@ -199,6 +199,7 @@ class FrameRemoveCredit(FrameSearch):
         ask= messagebox.askyesno("Consulta", f"¿Esta seguro de eliminar el credito {id_credit_delete} de {self.name} por el producto {product} con un faltante para pagar de {amount} con garante {guardator} con número de teléfono {phone_guardator} y direccion en {address_guardator}")    
         if ask:
             delete_credit(id_credit_delete)
+            delete_guardator(id_credit_delete)
             messagebox.showinfo("Se Borro el credito",f"El credito {id_credit_delete} fue borrado exitosamente")
             self.clean_data()
             self.my_credit_id_delete.set("")
