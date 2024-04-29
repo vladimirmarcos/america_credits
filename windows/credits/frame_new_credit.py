@@ -148,15 +148,10 @@ class FrameNewCredit(FrameSearch):
         self.entry_address_guardator=tk.Entry(self,textvariable=self.my_address_guardator)
         self.entry_address_guardator.config(width=15,font=('Arial',12),state='disabled')
         self.entry_address_guardator.grid(row=4,column=5,pady=10,sticky="w")
-
         self.entry_account.bind ("<Return>",self.search_account)
-     
-     
         self._frame = None  
         
-    def search_account(self,event):
-        account=check_integer(self.my_account.get())
-        self.check_account(account,self.verify_account_data)
+    
 
     def verify_account_data(self):
         data=search_data_account(self.account)
@@ -212,7 +207,6 @@ class FrameNewCredit(FrameSearch):
         self.disable(self.entry_name_guardator,self.my_name_guardator)
         self.disable(self.entry_address_guardator,self.my_address_guardator)
         
-
     def save_credit_data(self,event):
        fee=self.empty_field(self.my_dues.get())
        product=self.empty_field(self.my_product.get())
@@ -269,7 +263,7 @@ class FrameNewCredit(FrameSearch):
                 if ask: 
                     write_new_credit(new_credit)
                     max_id_credit=search_maximum_credit()
-                    write_expiration_dates(max_id_credit,expiration_dates,new_credit.amount)
+                    write_expiration_dates(max_id_credit,expiration_dates,math.ceil((new_credit.amount/fee)/10)*10)
                     new_guardator=Guardator(name_guardator,adress_guardator,phone_guardator,max_id_credit)
                     write_new_guardator(new_guardator)
                     messagebox.showinfo("Generación de nuevo credito",f"Generación exito de credito, el número es {max_id_credit}")
@@ -277,7 +271,6 @@ class FrameNewCredit(FrameSearch):
                     self.clean(self.entry_account,self.my_account)
                     self.my_account_name.set("")
                     self.my_account_dni.set("")
-
             else:
                    messagebox.showerror("Error","El anticipo es mayor o igual que el monto financiado")
 

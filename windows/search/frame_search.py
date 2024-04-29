@@ -4,7 +4,8 @@ import sqlite3
 
 import models
 from models.account_dao import search_name_account,check_account
-
+import processes
+from processes.math_processes import check_integer
 
 class FrameSearch(tk.Frame):
     def __init__(self, parent):
@@ -102,6 +103,10 @@ class FrameSearch(tk.Frame):
                 messagebox.showerror("Error",f"El numero {self.account} no esta asociado a ningun cliente" )
           else:
             messagebox.showerror("Error",f"El dato ingresado {account} no es valido como número de cuenta" )
+
+    def search_account(self,event):
+        account=check_integer(self.my_account.get())
+        self.check_account(account,self.verify_account_data)
 
     def delete(self):
         self.pack_forget()

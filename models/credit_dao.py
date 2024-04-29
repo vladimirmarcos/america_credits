@@ -1,4 +1,8 @@
 import sqlite3
+import math
+
+import processes
+from processes.str_and_date_processes import process_data_str_to_date
 
 from .conexion_db import ConexionDB
 from .models import Expiration_Dates
@@ -121,4 +125,114 @@ def write_new_guardator(Guardator):
         conexion.cursor.execute(sql)
         conexion.close()
 
- 
+def search_all_credit_account(account):
+     """_summary_
+
+    Args:
+        account (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """     
+     conexion=ConexionDB()
+     sql=f"""select credito,producto,monto_financiado FROM creditos WHERE cuenta={account} and estado=1"""
+     conexion.cursor.execute(sql)
+     list_credit=conexion.cursor.fetchall()
+     conexion.close()
+     if list_credit!=[]:
+        t=0
+        for i in list_credit:
+          list_credit[t]=list(i)
+          t+=1
+        return list_credit
+     else:
+          return False
+
+def search_info_guardator(list_credit):
+     """_summary_
+
+    Args:
+        list_credit (_type_): _description_
+     """     
+     list_guardator=[]
+     conexion=ConexionDB()
+     for i in list_credit:
+        sql=f"""select nombre,telefono,direccion FROM garantes WHERE credito={i[0]}"""
+        conexion.cursor.execute(sql)
+        list_credit=conexion.cursor.fetchone()
+        list_guardator.append(list(list_credit))
+     conexion.close()
+     return list_guardator
+
+def search_rest_credit(credit):
+     """_summary_
+
+    Args:
+        credit (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """  
+     conexion=ConexionDB()
+     sql=f"select fecha,monto,acuenta FROM fechas_pagos WHERE credito={credit} and estado='Por Pagar'"
+     conexion.cursor.execute(sql)
+     rest_credit=conexion.cursor.fetchall()
+     conexion.close()
+     j=0
+     for i in rest_credit:
+          rest_credit[j]=list(i)
+          j+=1
+     return rest_credit
+     
+def calculate_rest_of_the_credits(list_credit,today):
+     rest_credit=[]
+     for i in list_credit:
+          auxiliary=search_rest_credit(i[0])
+          total_credit=0.0
+          for j in auxiliary:
+               expiration_date=process_data_str_to_date(j[0])
+               expiration_date=expiration_date.date()
+               if expiration_date<today:
+                    interests=interest_calculation(today,expiration_date,j[1])
+                    rest_quote=j[1]+interests-j[2]
+                    total_credit+=rest_quote
+               else:
+                    rest_quote=j[1]-j[2]
+                    total_credit+=rest_quote
+          rest_credit.append(total_credit)  
+     return rest_credit
+               
+
+def interest_calculation(today,expiration_date,amount):
+     delta_days=today-expiration_date
+     delta_days=delta_days.days
+     mora=search_mora()
+     surcharges=math.ceil((((mora/30)*delta_days)/100)*amount)
+     surcharges=(surcharges/10)*10
+     return surcharges
+
+def search_mora():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """    
+    
+    conexion=ConexionDB()
+    sql=f""" SELECT moratoria from mora"""   
+    conexion.cursor.execute(sql)
+    mora=conexion.cursor.fetchall()
+    conexion.close() 
+    mora=list(mora)
+    mora=list(mora[0])
+    mora=mora[0]
+    return mora
+
+def delete_credit(credit):
+    conexion=ConexionDB()
+    sql=f""" DELETE FROM creditos WHERE credito={credit}"""
+    conexion.cursor.execute(sql)
+    sql_1=f""" DELETE FROM fechas_pagos WHERE credito={credit}"""
+    conexion.cursor.execute(sql_1)
+    conexion.close()
+    
