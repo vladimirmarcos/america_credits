@@ -14,7 +14,7 @@ class FrameSearch(tk.Frame):
     def serch_field(self):
         """_summary_:Position the name search label and entry search name
         """       
-        self.label_search_name=tk.Label(self,text='Busqueda\n nombre',justify="left")
+        self.label_search_name=tk.Label(self,text='Busq. nom',justify="left")
         self.label_search_name.config(font=('Arial',12,'bold'))
         self.label_search_name.grid(row=0,column=0)
 
