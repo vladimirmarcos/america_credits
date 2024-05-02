@@ -73,3 +73,11 @@ class Judicial_info:
     def __str__(self):
         return f'Judicial_info[{self.name},{self.address},{self.phone},{self.product},{self.judicial_credit}]'
 
+class Pay:
+    def __init__(self,date,data,account):
+        self.id_pagos=None
+        self.date=date
+        self.data=data 
+        self.account=account
+    def __str__(self):
+        return f'Pay[{self.date},{self.data},{self.account}]'

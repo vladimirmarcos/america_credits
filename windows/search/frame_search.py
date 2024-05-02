@@ -94,19 +94,19 @@ class FrameSearch(tk.Frame):
         """         
           field.bind(key,funcion)
     
-    def check_account(self,account,function):
+    def check_account(self,account,function,auxiliar):
           if account:
             self.account=check_account(account)
             if self.account:
                 function() 
             else:
-                messagebox.showerror("Error",f"El numero {self.account} no esta asociado a ningun cliente" )
+                messagebox.showerror("Error",f"El numero {auxiliar} no esta asociado a ningun cliente" )
           else:
-            messagebox.showerror("Error",f"El dato ingresado {account} no es valido como número de cuenta" )
+            messagebox.showerror("Error",f"El dato ingresado {auxiliar} no es valido como número de cuenta" )
 
     def search_account(self,event):
         account=check_integer(self.my_account.get())
-        self.check_account(account,self.verify_account_data)
+        self.check_account(account,self.verify_account_data,self.my_account.get())
 
     def delete(self):
         self.pack_forget()

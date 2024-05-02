@@ -21,7 +21,6 @@ class FrameJudicialCredit(FrameRemoveCredit):
     
     def delete_field(self):
         super().delete_field()
-
         self.label_credit_id_delete.destroy()
         self.entry_credit_id_delete.destroy()
 

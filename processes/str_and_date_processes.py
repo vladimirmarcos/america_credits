@@ -36,6 +36,32 @@ def processes_data_date(data):
 def process_data_str_to_date(data):
         date=datetime.datetime.strptime(data,"%Y%m%d")
         return date
+
+def convert_to_month(mes):
+        if mes==1:
+            return "Enero"
+        if mes==2:
+            return "Febrero"
+        if mes==3:
+            return "Marzo"
+        if mes==4:
+            return "Abril"
+        if mes==5:
+            return "Mayo"
+        if mes==6:
+            return "Junio"
+        if mes==7:
+            return "Julio"
+        if mes==8:
+            return "Agosto"
+        if mes==9:
+            return "Septiembre"
+        if mes==10:
+            return "Octubre"
+        if mes==11:
+            return "Noviembre"
+        if mes==12:
+            return "Diciembre" 
         
         
 

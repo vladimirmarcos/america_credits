@@ -99,7 +99,7 @@ def check_account(cuenta):
         data=data[0]
         return data
     except sqlite3.OperationalError:
-        messagebox.showerror("No se pudo acceder a la base de datos","No se ingresar a la base de datos","La base de datos esta siendo ocupada o esta dañada, intente más tarde")
+        messagebox.showerror("No se pudo acceder a la base de datos","No se ingresar a la base de datos La base de datos esta siendo ocupada o esta dañada, intente más tarde")
         return None
     except TypeError:
         return None

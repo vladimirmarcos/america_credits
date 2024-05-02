@@ -1,8 +1,13 @@
 import sqlite3
 import math
+import os
+from tkinter import messagebox
+from docxtpl import DocxTemplate
+
 
 import processes
-from processes.str_and_date_processes import process_data_str_to_date
+from processes.str_and_date_processes import process_data_str_to_date,processes_data_date,convert_to_month
+from processes.math_processes import check_integer
 
 from .conexion_db import ConexionDB
 from .models import Expiration_Dates
@@ -24,7 +29,7 @@ def search_judicial_credits(account):
          return None
 
 def search_account_credits_info(account):
-    """_summary_
+    """_summary_:return list of credits 
 
     Args:
         account (_type_): _description_
@@ -60,6 +65,17 @@ def search_credit_info(credit):
     credit=list(credit[0])
     return credit
 
+def search_product(credit):
+    conexion=ConexionDB()
+    sql=f""" SELECT producto from creditos where credito={credit}"""   
+    conexion.cursor.execute(sql)
+    product=conexion.cursor.fetchall()
+    conexion.close() 
+    product=list(product)
+    product=list(product[0])
+    product=product[0]
+    return product
+     
 def write_new_credit(Credit):
         """_summary_:w
 
@@ -202,10 +218,9 @@ def calculate_rest_of_the_credits(list_credit,today):
           rest_credit.append(total_credit)  
      return rest_credit
                
-def interest_calculation(today,expiration_date,amount):
+def interest_calculation(today,expiration_date,amount,mora):
      delta_days=today-expiration_date
      delta_days=delta_days.days
-     mora=search_mora()
      surcharges=math.ceil((((mora/30)*delta_days)/100)*amount)
      surcharges=(surcharges/10)*10
      return surcharges
@@ -229,9 +244,7 @@ def search_mora():
 
 def delete_credit(credit):
     conexion=ConexionDB()
-    sql=f""" DELETE FROM creditos WHERE credito={credit}"""
-    conexion.cursor.execute(sql)
-    sql_1=f""" DELETE FROM fechas_pagos WHERE credito={credit}"""
+    sql_1=f"""UPDATE creditos SET estado =0  where credito={credit}"""
     conexion.cursor.execute(sql_1)
     conexion.close()
 
@@ -265,3 +278,99 @@ def write_new_judicial_info(new_info):
        
         conexion.cursor.execute(sql)
         conexion.close()
+
+def search_all_credit_info(credit):
+    """_summary_:retunr list have fecha_id,fecha,monto,estado,acuenta
+
+    Args:
+        credit (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """    
+    conexion=ConexionDB()
+    sql=f"""SELECT fecha_id,fecha,cuota,monto,acuenta,estado FROM fechas_pagos where credito={credit} and estado='Por Pagar'"""
+    conexion.cursor.execute(sql)
+    credit=conexion.cursor.fetchall()
+    conexion.close()
+    t=0
+    for i in credit:
+         credit[t]=list(i)
+         t+=1
+    return credit
+
+def update_quote(money,state,credit,quote):
+    conexion=ConexionDB()
+    sql=f"""UPDATE fechas_pagos SET estado ='{state}' , acuenta = acuenta+{money} where credito={credit} and cuota={quote};"""
+    conexion.cursor.execute(sql)
+    credit=conexion.cursor.fetchall()
+    conexion.close()
+     
+def writte_new_pay(Pay):
+        conexion=ConexionDB()
+        sql=f"""INSERT INTO pagos (fecha_pago,datos,cuenta)
+        VALUES ('{Pay.date}','{Pay.data}','{Pay.account}')
+    """ 
+        conexion.cursor.execute(sql)
+        conexion.close()
+
+
+def generate_payment_receipt(today,diccionario_pagos,dni,nombre,cuenta,flag):
+     keys = list(diccionario_pagos.keys())
+     
+     for keys in diccionario_pagos:
+          valor=diccionario_pagos[keys]
+          t=0
+          for i in valor:
+               i[1]=str(i[1])
+               i[1]=i[1].ljust(10)
+               valor[t][1]=i[1]
+               if i[6]==0:
+                    valor[t][4]="A cuenta"
+                    valor[t][4]=valor[t][4].ljust(16)
+               if i[6]==1: 
+                    valor[t][4]="Cuota Cancelada"
+                    valor[t][4]=valor[t][4].ljust(16)
+               t=t+1
+          diccionario_pagos[keys]=valor  
+     template_location=os.path.join(os.path.abspath(os.getcwd()),"templates/pay_templates/")
+     archive_location=os.path.join(template_location, 'Pay.docx')  
+     
+     white_model= DocxTemplate(archive_location)
+     pay_date=processes_data_date(today)
+     partes_fecha = pay_date.split("-")
+     mounth=convert_to_month(check_integer(partes_fecha[1]))
+
+     
+     context={
+          
+          'hoy':partes_fecha[0],
+           'diccionario':diccionario_pagos,
+           'mes':mounth,
+           'ano':partes_fecha[2],
+        'nombre':nombre,
+          'dni': dni,
+          'claves_pagos':list(diccionario_pagos.keys()),
+          'cuenta':cuenta
+        
+     }
+     white_model.render(context)
+     rute_folder=os.path.join("pagos",f"{partes_fecha[1]}.{partes_fecha[2]}")
+     if os.path.exists(rute_folder):
+        pass
+     else:
+        os.mkdir(rute_folder)
+     rute_save=os.path.join(os.path.abspath(os.getcwd()),rute_folder)
+     archive=""+"Recibo-"+nombre+"-"+str(pay_date)+"_cuenta_"+str(cuenta)+".doc"
+     archive_name=os.path.join(rute_save,archive)
+     white_model.save(archive_name)
+     rute=os.path.join(os.path.abspath(os.getcwd()),"pagos")
+     rute_archive=os.path.join(rute,f"{partes_fecha[1]}.{partes_fecha[2]}")
+     if flag:
+        try:
+            os.startfile(rute_save,"print")
+        except:
+             messagebox.showerror("No se puede imprimir el archivo",f"No se pudo imprimir el recibo, el archivo se encuentra en la ruta {rute_archive}")
+     else:
+          messagebox.showinfo("Se Guardo el archivo",f"el archivo se guardo en \n {rute_archive}")
+    
