@@ -168,7 +168,6 @@ class FrameRemoveCredit(FrameSearch):
                 t+=1
                 k+=1
                 f+=1
-            
         else:
             messagebox.showerror("No se encontraron créditos",f"No se encontro creditos asociados a la cuenta número {self.account}")
 

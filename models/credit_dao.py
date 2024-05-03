@@ -75,7 +75,18 @@ def search_product(credit):
     product=list(product[0])
     product=product[0]
     return product
-     
+
+def search_credit(fecha_id):
+    conexion=ConexionDB()
+    sql=f""" SELECT credito from fechas_pagos where fecha_id={fecha_id}"""   
+    conexion.cursor.execute(sql)
+    product=conexion.cursor.fetchall()
+    conexion.close() 
+    product=list(product)
+    product=list(product[0])
+    product=product[0]
+    return product   
+
 def write_new_credit(Credit):
         """_summary_:w
 
@@ -217,7 +228,26 @@ def calculate_rest_of_the_credits(list_credit,today):
                     total_credit+=rest_quote
           rest_credit.append(total_credit)  
      return rest_credit
-               
+
+def calculate_rest_of_the_credits_info(list_credit,today):
+     mora=search_mora()
+     total_account=0
+     for i in list_credit:
+        total_credit=0.0
+        auxiliary=search_rest_credit(i)
+        for j in auxiliary:
+             expiration_date=process_data_str_to_date(j[0])
+             expiration_date=expiration_date.date()
+             if expiration_date<today:
+                    interests=interest_calculation(today,expiration_date,j[1],mora)
+                    rest_quote=j[1]+interests-j[2]
+                    total_credit+=rest_quote
+             else:
+                    rest_quote=j[1]-j[2]
+                    total_credit+=rest_quote
+        total_account=total_account+total_credit
+     return total_account
+     
 def interest_calculation(today,expiration_date,amount,mora):
      delta_days=today-expiration_date
      delta_days=delta_days.days
@@ -255,7 +285,6 @@ def delete_guardator(credit):
     sql=f""" DELETE FROM garantes WHERE credito={credit}"""
     conexion.cursor.execute(sql)
     conexion.close()
-
 
 def write_new_judicial_credit(Judicial):
         conexion=ConexionDB()
@@ -316,7 +345,6 @@ def writte_new_pay(Pay):
         conexion.cursor.execute(sql)
         conexion.close()
 
-
 def generate_payment_receipt(today,diccionario_pagos,dni,nombre,cuenta,flag):
      keys = list(diccionario_pagos.keys())
      
@@ -376,3 +404,13 @@ def generate_payment_receipt(today,diccionario_pagos,dni,nombre,cuenta,flag):
      else:
           messagebox.showinfo("Se Guardo el archivo",f"el archivo se guardo en \n {rute_archive}")
     
+def search_account(credit):
+    conexion=ConexionDB()
+    sql=f""" SELECT cuenta from creditos where credito={credit}"""   
+    conexion.cursor.execute(sql)
+    mora=conexion.cursor.fetchone()
+    conexion.close() 
+    mora=list(mora)
+    
+    mora=mora[0]
+    return mora

@@ -256,7 +256,6 @@ class FrameNewCredit(FrameSearch):
                 new_credit=Credits(self.account,fee,product,amount,datetime.datetime.strftime(self.third_date,"%Y%m%d"))
                 fee=int(self.my_dues.get())
                 third_date_str=datetime.datetime.strftime(self.third_date,"%Y%m%d")
-
                 mensaje=f"""Generación de nuevo credito a cliente con nombre {self.name}, cuyo dni es {self.dni} por los productos de {new_credit.products} por total de monto financiado de {new_credit.amount}, con un anticipo de {advance}, quedando a cuenta {on_account}, en {new_credit.fee} cuotas de {math.ceil((new_credit.amount/fee)/10)*10} con el primer vencimiento el día  {processes_data_date(expiration_dates[0][0])} debe pagar la suma de {pay} con garante {name_guardator} cuyo telefono es {phone_guardator} y su direccion es {adress_guardator} generado en la fecha {processes_data_date(third_date_str)}"""
 
                 ask = messagebox.askyesno("Generación de nuevo credito", mensaje)
@@ -298,9 +297,10 @@ class FrameNewCredit(FrameSearch):
               return list_expirate_days
         else:
               date_str=datetime.datetime.strftime(first_date,"%Y%m%d")
-              list_expirate_days.append(date_str)
-              date_str=datetime.datetime.strftime(second_date,"%Y%m%d")
               list_expirate_days.append([date_str,on_account])
+              
+              date_str=datetime.datetime.strftime(second_date,"%Y%m%d")
+              list_expirate_days.append([date_str,0.0])
               date=second_date
               for i in range(fee-2): 
                    date=date+delta_day
