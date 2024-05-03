@@ -65,4 +65,6 @@ class FrameJudicialCredit(FrameRemoveCredit):
             self.my_credit_id_delete.set("")
             self.entry_credit_id_delete.config(state='disabled')
             self.my_account.set("")
+            self.my_account_dni.set("")
+            self.my_account_name.set("")
             self.entry_account.focus()

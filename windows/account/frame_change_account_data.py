@@ -87,7 +87,7 @@ class FrameChangeData(FrameSearch):
 
     def search_account(self,event):
         account=check_integer(self.my_account_number.get())
-        self.check_account(account,self.verify_account_data)
+        self.check_account(account,self.verify_account_data,self.my_account_number.get())
         
     def verify_account_data(self):
         data=search_data_account(self.account)

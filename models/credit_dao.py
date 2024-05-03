@@ -244,6 +244,8 @@ def search_mora():
 
 def delete_credit(credit):
     conexion=ConexionDB()
+    sql=sql_1=f"""UPDATE fechas_pagos SET estado =0  where credito={credit}"""
+    conexion.cursor.execute(sql)
     sql_1=f"""UPDATE creditos SET estado =0  where credito={credit}"""
     conexion.cursor.execute(sql_1)
     conexion.close()
