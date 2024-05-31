@@ -10,6 +10,7 @@ from windows.reports.frame_report_credit import FrameReportsCredits
 from windows.reports.frame_report_pay import FrameReportsPay
 from windows.reports.freme_rest_credit import FrameReportsRestCredit
 from windows.reports.frame_morosos_reports import FrameReportsMorosos
+from windows.config.frame_mora_actualizada import FrameActualizarMora
 
 class App(tk.Frame):
     
@@ -39,6 +40,10 @@ class App(tk.Frame):
         self.menu_reports.add_command(label="Reporte recibimos emitidos",command=self.reports_pay)
         self.menu_reports.add_command(label="Reporte saldos totales",command=self.reports_rest_credit)
         self.menu_reports.add_command(label="Reporte Morosos",command=self.reports_morosos)
+
+        self.menu_config= tk.Menu(self.menu, tearoff=0)
+        self.menu.add_cascade(label="Configuración", menu=self.menu_config)
+        self.menu_config.add_command(label="Actualizar Mora",command=self.actualizo_mora)
 
         parent.config(menu=self.menu)
         self._frame = None
@@ -110,3 +115,10 @@ class App(tk.Frame):
                self._frame = None
             if self._frame is None:
                self._frame = FrameReportsMorosos(self)
+
+    def actualizo_mora(self):
+            if self._frame is not None:
+               self._frame.delete()
+               self._frame = None
+            if self._frame is None:
+               self._frame = FrameActualizarMora(self)

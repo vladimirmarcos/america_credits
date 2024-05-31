@@ -220,7 +220,7 @@ def calculate_rest_of_the_credits(list_credit,today):
                expiration_date=process_data_str_to_date(j[0])
                expiration_date=expiration_date.date()
                if expiration_date<today:
-                    interests=interest_calculation(today,expiration_date,j[1])
+                    interests=interest_calculation(today,expiration_date,j[1],search_mora())
                     rest_quote=j[1]+interests-j[2]
                     total_credit+=rest_quote
                else:
@@ -403,7 +403,14 @@ def generate_payment_receipt(today,diccionario_pagos,dni,nombre,cuenta,flag):
              messagebox.showerror("No se puede imprimir el archivo",f"No se pudo imprimir el recibo, el archivo se encuentra en la ruta {rute_archive}")
      else:
           messagebox.showinfo("Se Guardo el archivo",f"el archivo se guardo en \n {rute_archive}")
-    
+
+def update_mora(mora):
+        conexion=ConexionDB()
+        sql=f""" update mora set moratoria='{mora}' 
+    """
+        conexion.cursor.execute(sql)
+        conexion.close()
+
 def search_account(credit):
     conexion=ConexionDB()
     sql=f""" SELECT cuenta from creditos where credito={credit}"""   

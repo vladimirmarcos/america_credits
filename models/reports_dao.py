@@ -40,6 +40,7 @@ def generate_informs(information,fecha1,fecha2):
     white_model= DocxTemplate(archive_location)
     context={
          'informacion':information,
+         
           'fecha1':processes_data_date(fecha1),
           'fecha2':processes_data_date(fecha2)
      }
